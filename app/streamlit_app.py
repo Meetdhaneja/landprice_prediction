@@ -6,6 +6,8 @@ import json
 from pathlib import Path
 import sys
 
+from src.db import Database
+
 sys.path.append(str(Path(__file__).parent.parent))
 
 
@@ -257,6 +259,22 @@ if model is not None and metrics is not None:
         
         prediction = model.predict(input_features)[0]
         total_price = prediction * area_sqft
+        
+        # Save to database
+        db = Database()
+        db.connect()
+        if db.conn:
+            features_to_save = {
+                'area_sqft': int(area_sqft),
+                'location': location_type,
+                'proximity_to_city_km': int(proximity_to_city_km),
+                'road_access': road_access,
+                'water_supply': water_supply,
+                'electricity': electricity,
+                'year': int(year)
+            }
+            db.save_prediction(features_to_save, float(prediction))
+            db.close()
         
         
         st.success("✅ Prediction Complete!")

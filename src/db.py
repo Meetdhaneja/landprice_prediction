@@ -1,10 +1,11 @@
-"""
-PostgreSQL database connection helper
-"""
 import psycopg2
 from psycopg2.extras import RealDictCursor
 import os
 from datetime import datetime
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 
 class Database:
